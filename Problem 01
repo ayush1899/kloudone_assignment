@@ -1,0 +1,32 @@
+//This is a Java Program to find out the data type of the User Input
+
+import java.util.Scanner;
+
+class problem1 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if(sc.hasNextInt()) {
+            System.out.println("Integer");
+        }
+        else 
+            if(sc.hasNextFloat()) {
+                System.out.println("Float");
+            }
+        else 
+            if(sc.hasNextBoolean()) {
+                System.out.println("Boolean");
+            }    
+        else
+            if(sc.hasNextLine()) {
+                System.out.println("String");
+            }
+        else 
+            if(sc.hasNextDouble()) {
+                System.out.println("Double");
+            }
+        else
+            if(sc.hasNextLong()) {
+                System.out.println("Long");
+            }
+    }
+}
