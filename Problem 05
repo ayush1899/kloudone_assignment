@@ -1,0 +1,34 @@
+// SQL query to create a table to store Hierarical Data Structures
+
+BEGIN TRANSACTION;
+
+CREATE TABLE NAMES(Id integer PRIMARY KEY, Name text, Manager_Id integer);
+
+INSERT INTO NAMES VALUES(1,'Robert Downey Jr.',null);
+INSERT INTO NAMES VALUES(2,'Steve Rogers',1);
+INSERT INTO NAMES VALUES(3,'James Barnes',2);
+INSERT INTO NAMES VALUES(4,'Sam Wilson',2);
+INSERT INTO NAMES VALUES(6,'T Challa',2);
+INSERT INTO NAMES VALUES(7,'Thor',1);
+INSERT INTO NAMES VALUES(8,'Loki',7);
+INSERT INTO NAMES VALUES(9,'Valkarie',7);
+INSERT INTO NAMES VALUES(10,'Bruce Banner',1);
+INSERT INTO NAMES VALUES(11,'Peter Parker',10);
+INSERT INTO NAMES VALUES(12,'Col. Rhodes',10);
+INSERT INTO NAMES VALUES(13,'Scarlotte Johansson',1);
+COMMIT;
+
+SELECT * FROM NAMES;
+
+WITH RECURSIVE empdata AS (
+  (SELECT Id, Name, Manager_Id, 1 AS level
+  FROM NAMES
+  WHERE Id = 1)
+  UNION ALL
+  (SELECT this.Id, this.Name, this.Manager_Id, prior.level + 1
+  FROM empdata prior
+  INNER JOIN NAMES this ON this.Manager_Id = prior.Id)
+)
+SELECT e.Id, e.Name, e.Manager_Id, e.level
+FROM empdata e
+ORDER BY e.level;
