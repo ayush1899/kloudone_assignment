@@ -1,0 +1,112 @@
+// This is a Java program to fetch out the URL's from a given website URL
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class problem2 {
+
+    public static List<URL> crawl(URL start, int limit) {
+        List<URL> urls = new ArrayList<URL>(limit);
+        urls.add(start);
+
+        Set<URL> urlsCopy = new HashSet<URL>(urls);
+
+        int i = 0;
+        while (urls.size() < limit && i < urls.size()) {
+            URL currentUrl = urls.get(i);
+            for (URL url : extractLinks(currentUrl)) {
+                if (urlsCopy.add(url)) {
+                    urls.add(url);
+                    if (urls.size() == limit) {
+                        break;
+                    }
+                }
+            }
+            i++;
+        }
+        return urls;
+    }
+
+    
+    public static void main(String[] args) {
+        try {
+            URL initial = new URL("http://www.google.com");
+            int limit = 1000;
+
+            long start = System.currentTimeMillis();
+            List<URL> discovered = problem2.crawl(initial, limit);
+            long finish = System.currentTimeMillis();
+            System.out.println("Discovered " + discovered.size() + " urls in " + (finish - start) + " ms.");
+
+            System.out.println("Showing list of URL's in "+initial.getHost()+" website is listed below :");
+            int i = 1;
+            Iterator<URL> iterator = discovered.iterator();
+            while (iterator.hasNext() && i <= 100) {
+                System.out.println(i + ") " + iterator.next());
+                i++;
+            }
+        }
+        catch (MalformedURLException e) {
+            System.err.println("The URL to start crawling with is invalid.");
+        }
+    }
+
+    private static LinkedHashSet<URL> extractLinks(URL url) {
+        LinkedHashSet<URL> links = new LinkedHashSet<URL>();
+        Pattern p = Pattern.compile("href=\"((http://|https://|www).*?)\"", Pattern.DOTALL);
+        Matcher m = p.matcher(fetchContent(url));
+
+        while (m.find()) {
+            String linkStr = normalizeUrlStr(m.group(1));
+            try {
+                URL link = new URL(linkStr);
+                links.add(link);
+            }
+            catch (MalformedURLException e) {
+                System.err.println("Page at " + url + " has a link to invalid URL : " + linkStr + ".");
+            }
+        }
+        return links;
+    }
+
+    private static String fetchContent(URL url) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                stringBuilder.append(inputLine);
+            }
+            in.close();
+        }
+        catch (IOException e) {
+            System.err.println("An error occured while atempt to fetch content from " + url);
+        }
+        return stringBuilder.toString();
+    }
+
+
+    private static String normalizeUrlStr(String urlStr) {
+        if (!urlStr.startsWith("http")) {
+            urlStr = "http://" + urlStr;
+        }
+        if (urlStr.endsWith("/")) {
+            urlStr = urlStr.substring(0, urlStr.length() - 1);
+        }
+        if (urlStr.contains("#")) {
+            urlStr = urlStr.substring(0, urlStr.indexOf("#"));
+        }
+        return urlStr;
+    }
+}
