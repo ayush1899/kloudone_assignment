@@ -1,0 +1,131 @@
+// This is a Java Program of implementation of a Car and its features
+
+public class problem3 {
+    public static void main(String[] args) {
+        Car c = new Car();
+        System.out.println("Its a New Car...Yes it is!!!");
+        c.Start();
+        c.incGear();
+        c.speedRange();
+        c.incGear();
+        c.turn("Left");
+        c.revGear();
+        c.incGear();
+        c.currentGear();
+        c.speedRange();
+        c.decGear();
+        c.decGear();
+        c.speedRange();
+        c.currentGear();
+        c.turn("Left");
+        c.revGear();
+        c.Stop();    
+    }
+}
+
+class Car {
+    int gear = 0;
+    int srt = 0;
+    int stp = 1;
+    void Start() {
+        if(srt==0) {
+            System.out.println("Car Started");
+            srt = 1;
+            stp = 0;
+        }
+        else {
+            System.out.println("Car has started already");
+        }
+    }
+    void Stop() {
+        if(stp == 0) {
+            srt = 0;
+            stp = 1;
+            gear = 0;
+            System.out.println("Car Stopped and gears reset");
+        }
+        else {
+            System.out.println("Car already stopped");
+        }
+    }
+    void incGear() {
+        if(srt == 1 && stp ==0) {
+            if(gear>=0 && gear<5) {
+                gear++;
+                System.out.println("Gear got Increased :"+gear);
+            }
+            else if (gear>=5) {
+                System.out.println("Gear can't be increased further");
+            }
+        }
+        else {
+            System.out.println("Can't perform operation as car is stopped");
+        }
+    }
+    void decGear() {
+        if(srt == 1 && stp == 0) {
+            if(gear<=5 && gear>0) {
+                gear--;
+                System.out.println("Gear got Decreased :"+gear);
+            }
+            else if(gear<=0) {
+                System.out.println("Gear can't be decreased further");
+            }
+        }
+        else {
+            System.out.println("Can't perform the operation as car is stopped");
+        }
+    }
+    int currentGear() {
+        return gear;
+    }
+
+    void revGear() {
+        gear=0;
+        System.out.println("Car reversed and Gear is reset to 0");
+    }
+
+    void speedRange() {
+        switch(gear) {
+            case 0:
+            System.out.println("0 kmph");
+            break;
+            case 1:
+            System.out.println("0 to 25 kmph");
+            break;
+            case 2:
+            System.out.println("25 to 40 kmph");
+            break;
+            case 3:
+            System.out.println("40 to 60 kmph");
+            break;
+            case 4:
+            System.out.println("60 to 90 kmph");
+            break;
+            case 5:
+            System.out.println("90 to 120 kmph");
+            break;
+            default:
+            System.out.println("Error!!!");
+            break;
+        }
+    }
+    void turn(String dirn) {
+        if(srt == 1 && stp == 0 ) {
+            switch(dirn.toLowerCase()) {
+                case "left":
+                System.out.println("Turned left");
+                break;
+                case "right":
+                System.out.println("Turned right");
+                break;
+                default:
+                System.out.println("Error!!");
+                break;
+            }
+        }
+        else {
+            System.out.println("Can't perform the operation as car is stopped");
+        }
+    }
+}
